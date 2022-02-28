@@ -1,0 +1,81 @@
+﻿@model MagzineRental.ViewModels.MagzineViewModel
+
+@{
+    ViewBag.Title = "Details Magzine By Api";
+}
+
+<h2>Magzine Details by Api</h2>
+
+        <hr />
+        <div class="table-wrapper">
+            <table class="fl-table table-hover">
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Magzine.Name)</td>
+                    <td><span id="js-name"></span></td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Magzine.ReleaseDate)</td>
+                    <td>
+                        <span id="js-releasedate"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Magzine.GenreId)</td>
+                    <td><span id="js-genreid"></span></td>
+                </tr>
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Magzine.NumberofStock)</td>
+                    <td><span id="js-numberstock"></span></td>
+                </tr>
+            </table>
+
+
+        </div>
+        @Html.ActionLink("Back to List", "ApiMagzines", "Magzine")
+        <br />
+        <br />
+   
+
+
+@section scripts{
+
+<script>
+    $(document).ready(function () {
+        $(".li-main").removeClass("active");
+        $(".api-mag-1").addClass("active");
+
+        var mid = @ViewBag.Magzineid;
+        $.ajax({
+            url:"/api/Magzines/"+mid,
+            method: "GET",
+            success: function(data){
+                $("#js-name").text(data.name);
+
+                var dt = new Date(data.releaseDate);
+                $("#js-releasedate").text(dt.getDate()+' '+monthName(dt.getMonth())+' '+dt.getFullYear());
+
+                $("#js-genreid").text(data.genre.name);
+                $("#js-numberstock").text(data.numberofStock);
+            }
+
+        });
+
+        function monthName(num){
+            switch(num){
+                case 0: return "Jan";
+                case 1: return "Feb";
+                case 2: return "Mar";
+                case 3: return "Apr";
+                case 4: return "May";
+                case 5: return "Jun";
+                case 6: return "Jul";
+                case 7: return "Aug";
+                case 8: return "Sep";
+                case 9: return "Oct";
+                case 10: return "Nov";
+                case 11: return "Dec";
+            }
+        }
+    });
+</script>
+    }

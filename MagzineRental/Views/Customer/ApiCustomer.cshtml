@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "Api Customer";
+}
+
+<h2>Customer Record by Api</h2>
+
+@Html.ActionLink("New Customer", "NewApi", "Customer", new { area = "" }, new { @class = "btn btn-primary new", style="margin-bottom: 12px" })
+
+
+    <table class="table table-hover table-bordered table-responsive" id="customers">
+        <thead>
+            <tr>
+                <th>
+                    Customer
+                </th>
+                <th>
+                    Membership Type
+                </th>
+                <th>
+                    Discount Rate
+                </th>
+                <th>
+                    Delete
+                </th>
+            </tr>
+        </thead>
+       
+       
+    </table>
+
+@section customcss{
+    @Styles.Render("~/Content/tablecss")
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/datatabless")
+
+    <script>
+        $(document).ready(function () {
+            $(".li-main").removeClass("active");
+            $(".api-cust-1").addClass("active");
+
+            var customertable = $("#customers").DataTable({
+                ajax: {
+                    url: "/api/customer",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name",
+                        render: function (data, type, customer) {
+                            return "<a href='/Customer/DetailsApi/" + customer.id + "'>" + customer.name + "</a>";
+                        }
+                    },
+                    {
+                        data: "membershipType.name"
+                    },
+                    {
+                        data: "membershipType.discountRate",
+                        render: function (data) {
+                            return data + "%";
+                        }
+                    },
+                    {
+                        data: "id",
+                        render: function (data) {
+                            return "<Button class='btn-link text-danger js-delete' data-customer-id=" + data + ">Delete &nbsp;<i class='fa fa-trash'></i></Button>";
+                        }
+                    }
+
+                ]
+            });
+
+            $("#customers").on("click", ".js-delete", function (event) {
+                var button = $(this);
+                bootbox.confirm("Are you sure, you want to delte this customer?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/Api/Customer/" + button.attr("data-customer-id"),
+                            method: "DELETE",
+                            success: function (data) {
+                                customertable.row(button.parents("tr")).remove().draw();
+                            },
+                            error: function (req, error) {
+                                alert("Unable to delete record\n" + req.responseText);
+                            }
+                        });
+                    }
+                });
+                
+            });
+        });
+    </script>
+}

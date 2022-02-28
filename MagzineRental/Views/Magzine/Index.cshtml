@@ -1,0 +1,163 @@
+﻿@model List<MagzineRental.Models.Magzine>
+@{
+    ViewBag.Title = "Magzines";
+}
+<style>
+    .new {
+        margin-bottom: 15px;
+    }
+</style>
+<h2>Magzines</h2>
+
+@if (ViewBag.delete != null)
+{
+    int a = Convert.ToInt16(ViewBag.delete);
+    if (a == 1)
+    {
+        <div class="row">
+            <div class="alert alert-success alert-dismissible col-md-6 col-lg-offset-3">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Record delete successfully</strong>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+
+    }
+    else
+    {
+        <div class="row">
+            <div class="alert alert-danger alert-dismissible col-md-6 col-lg-offset-3">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Unable to delete record</strong>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+
+
+    }
+}
+
+@Html.ActionLink("New Magzine", "New", "Magzine", new { area = "" }, new { @class = "btn btn-primary new" })
+
+@if (Model.Count == 0)
+{
+    <p>We don't have any Magzine yet.</p>
+}
+else
+{
+    <table class="table table-hover table-bordered table-responsive Magzines" id="magzinetable">
+        <tr>
+            <th>
+                Magzines <i class="tablesort pull-right fa fa-sort-amount-asc sort-remove"></i>
+            </th>
+            <th>
+                Genre <i class="tablesort pull-right fa fa-sort-amount-asc sort-remove"></i>
+            </th>
+            <th>
+                Number of stocks <i class="tablesort pull-right fa fa-sort-amount-asc sort-remove"></i>
+            </th>
+            <th>
+                Available to rent <i class="tablesort pull-right fa fa-sort-amount-asc sort-remove"></i>
+            </th>
+            <th>
+                Option
+            </th>
+        </tr>
+        @foreach (var mov in Model)
+        {
+            <tr>
+                <td>@Html.ActionLink(@mov.Name,"Details/"+mov.Id, "Magzine")</td>
+                <td>@mov.genre.Name</td>
+                <td>@mov.NumberofStock</td>
+                <td>@mov.NumberAvailable</td>
+                <td>
+                    <a href="/Magzine/Delete/@mov.Id" class="js-delete text-danger">
+                        Delete &nbsp;<i class="fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+
+        }
+    </table>
+}
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            $(".li-main").removeClass("active");
+            $(".mag-1").addClass("active");
+
+            $(".Magzines").on("click", ".js-delete", function (event) {
+                var a = confirm("Are you sure, you want to delete the record?");
+
+                if (a == false) {
+                    event.preventDefault();
+                }
+            });
+
+            $(".Magzines").on("click", "th", function (event) {
+                //debugger;
+                var a = $(this).context.cellIndex;
+                var elem = document.getElementById("magzinetable");
+                var ord = sortTable(a, elem);
+                $(".tablesort").removeClass("sort-apply");
+                $(".tablesort").addClass("sort-remove");
+
+                $(this).find("i").addClass("sort-apply");
+                if (ord == "asc") {
+                    $(this).find("i").addClass("fa-sort-amount-asc");
+                    $(this).find("i").removeClass("fa-sort-amount-desc");
+                }
+                else {
+                    $(this).find("i").addClass("fa-sort-amount-desc");
+                    $(this).find("i").removeClass("fa-sort-amount-asc");
+                }
+            });
+
+
+            function sortTable(n, table) {
+                var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+                switching = true;
+
+                dir = "asc";
+
+                while (switching) {
+                    switching = false;
+                    rows = table.rows;
+
+                    for (i = 1; i < (rows.length - 1) ; i++) {
+                        shouldSwitch = false;
+                        x = rows[i].getElementsByTagName("TD")[n];
+                        y = rows[i + 1].getElementsByTagName("TD")[n];
+                        if (x.innerHTML.toLowerCase().indexOf("<a") > 0) {
+                            x = x.getElementsByTagName("a")[0];
+                            y = y.getElementsByTagName("a")[0];
+                        }
+                        if (dir == "asc") {
+                            if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else if (dir == "desc") {
+                            if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (shouldSwitch) {
+                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                        switching = true;
+                        switchcount++;
+                    } else {
+                        if (switchcount == 0 && dir == "asc") {
+                            dir = "desc";
+                            switching = true;
+                        }
+                    }
+                }
+                return dir;
+            }
+        });
+    </script>
+}

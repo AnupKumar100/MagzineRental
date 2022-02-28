@@ -1,0 +1,69 @@
+﻿
+@{
+    ViewBag.Title = "Api Customer";
+}
+
+<h2>Customer Record by Api </h2>
+
+@Html.ActionLink("New Customer", "NewApi", "Customer", new { area = "" }, new { @class = "btn btn-primary new", style="margin-bottom: 12px" })
+
+
+    <table class="table table-hover table-bordered table-responsive" id="customers">
+        <thead>
+            <tr>
+                <th>
+                    Customer
+                </th>
+                <th>
+                    Membership Type
+                </th>
+                <th>
+                    Discount Rate
+                </th>
+            </tr>
+        </thead>
+       
+       
+    </table>
+
+@section customcss{
+    @Styles.Render("~/Content/tablecss")
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/datatabless")
+
+    <script>
+        $(document).ready(function () {
+            $(".li-main").removeClass("active");
+            $(".api-cust-1").addClass("active");
+
+            var customertable = $("#customers").DataTable({
+                ajax: {
+                    url: "/api/customer",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name",
+                        render: function (data, type, customer) {
+                            return "<a href='/Customer/DetailsApi/" + customer.id + "'>" + customer.name + "</a>";
+                        }
+                    },
+                    {
+                        data: "membershipType.name"
+                    },
+                    {
+                        data: "membershipType.discountRate",
+                        render: function (data) {
+                            return data + "%";
+                        }
+                    }
+                    
+
+                ]
+            });
+
+        });
+    </script>
+}

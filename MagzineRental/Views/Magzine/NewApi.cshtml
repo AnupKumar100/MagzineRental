@@ -1,0 +1,119 @@
+﻿@model MagzineRental.ViewModels.MagzineViewModel
+
+@{
+    ViewBag.Title = "New Magzine By Api";
+}
+
+<h2>New Magzine</h2>
+
+@using (Html.BeginForm("", "Api/Magzines", FormMethod.Post, new { @id = "updateMagzine" })) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Magzine.Name, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Magzine.Name, new { htmlAttributes = new { @class = "form-control js-name" } })
+                @Html.ValidationMessageFor(model => model.Magzine.Name, "", new { @class = "text-danger" })
+           
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Magzine.ReleaseDate, htmlAttributes: new { @class = "control-label" })
+           
+                @Html.TextBoxFor(model => model.Magzine.ReleaseDate, "{0:d MMM yyyy}",  new { @class = "form-control js-releasedate" } )
+                @Html.ValidationMessageFor(model => model.Magzine.ReleaseDate, "", new { @class = "text-danger" })
+           
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Magzine.GenreId, htmlAttributes: new { @class = "control-label" })
+
+            @Html.DropDownListFor(model => model.Magzine.GenreId, new SelectList(Model.genretypes,"Id", "Name"),"select" , new { @class = "form-control js-genreid" } )
+            @Html.ValidationMessageFor(model => model.Magzine.GenreId, "", new { @class = "text-danger" })
+
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Magzine.NumberofStock, htmlAttributes: new { @class = "control-label" })
+            
+                @Html.EditorFor(model => model.Magzine.NumberofStock, new { htmlAttributes = new { @class = "form-control js-numberstock" } })
+                @Html.ValidationMessageFor(model => model.Magzine.NumberofStock, "", new { @class = "text-danger" })
+            
+        </div>
+
+        
+
+        <div class="form-group">
+            <div class="col-md-2">
+                @Html.HiddenFor(model => model.Magzine.Id, new {@class="js-id" })
+                <input type="submit" value="Save" class="btn btn-success btn-block" id="js-save" />
+            </div>
+
+            <br />
+        </div>
+
+        
+        <br />
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "ApiMagzines", "Magzine")
+
+    <div id="errormsg3"></div>
+</div>
+@section scripts{
+
+    @Scripts.Render("~/bundles/jqueryval");
+
+<script>
+        $(document).ready(function () {
+            
+            $(".li-main").removeClass("active");
+            $(".api-mag-1").addClass("active");
+
+            $(document).on("submit", "#updateMagzine", function (event) {
+                //debugger
+                event.preventDefault();
+                var id = $(".js-id").val();
+                var name = $(".js-name").val();
+                var releasedate = $(".js-releasedate").val();
+                var genreid = $(".js-genreid").val();
+                var stock = $(".js-numberstock").val();
+               
+                $.ajax({
+                    type: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify({ "id": id, "name": name, "releaseDate": releasedate, "genreId": genreid, "numberofStock": stock }),
+                    success: function (data) {
+                        $('#js-save').removeAttr('disabled');
+                        $('#js-save').val('Save');
+                        if (data.success) {
+                            $('#errormsg3').css('color', 'green');
+                            $('#errormsg3').html("<div class='row'><div class='col-md-4 col-lg-offset-4'><div class='alert alert-success alert-dismissible fade in'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong><i class='fa fa-check'></i>&nbsp;&nbsp; Magzine added successfully</strong></div></div></div>");
+                            window.location = "/Magzine/ApiMagzines";
+                        } else {
+                            $('#errormsg3').css('color', 'red');
+                            $('#errormsg3').html("<div class='row'><div class='col-md-4 col-lg-offset-4'><div class='alert alert-danger alert-dismissible fade in'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong><i class='fa fa-times-circle'></i>&nbsp;&nbsp; Magzine not saved</strong></div></div></div>");
+                        }
+                    }, error: function (req, error) {
+                        $('#js-save').removeAttr('disabled');
+                        $('#js-save').val('Save');
+                        $('#errormsg3').css('color', 'red');
+                        var resdata = JSON.parse(req.responseText);
+                        $('#errormsg3').html("<div class='row'><div class='col-md-12 text-center'><div class='alert alert-danger alert-dismissible fade in'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong><i class='fa fa-times-circle'></i>&nbsp;&nbsp;"+ resdata["message"]+"</strong></div></div></div>");
+                    }, beforeSend: function () {
+                        $('#js-save').attr('disabled', 'disabled');
+                        $('#js-save').val('Please wait...');
+                    }
+                });
+            });
+        });
+</script>
+    }

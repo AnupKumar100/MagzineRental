@@ -1,0 +1,150 @@
+﻿@model MagzineRental.ViewModels.CustmerViewModel
+
+@{
+    ViewBag.Title = ViewBag.stat + " Customer";
+}
+
+<h2>@ViewBag.stat Customer</h2>
+
+@using (Html.BeginForm("","Api/Customer",FormMethod.Post, new { @id ="updatecustomer"}))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form">
+        
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.customer.Name, htmlAttributes: new { @class = "control-label" }) <i class="fa fa-user"></i>
+            @Html.EditorFor(model => model.customer.Name, new { htmlAttributes = new { @class = "form-control js-name" } })
+            @Html.ValidationMessageFor(model => model.customer.Name, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.customer.MembershipId, htmlAttributes: new { @class = "control-label" }) <i class="fa fa-calculator"></i>
+            @Html.DropDownListFor(model => model.customer.MembershipId, new SelectList(Model.membershiptype, "Id", "Name"),"Select",  new { @class = "form-control js-membershipid" })
+            @Html.ValidationMessageFor(model => model.customer.MembershipId, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.customer.BirthDate, htmlAttributes: new { @class = "control-label" }) <i class="fa fa-birthday-cake"></i>
+            @Html.TextBoxFor(model => model.customer.BirthDate,"{0:d MMM yyyy}",new { @class = "form-control js-birthdate" } )
+            @Html.ValidationMessageFor(model => model.customer.BirthDate, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    @Html.EditorFor(model => model.customer.IsSubscribedToNewsLetter, new {@class = "js-isSubscribed"})@Html.LabelFor(model => model.customer.IsSubscribedToNewsLetter)
+                </label> 
+                    
+            </div>
+           
+        </div>
+
+        <div class="form-group">
+               <div class="col-md-2">
+                   @Html.HiddenFor(model => model.customer.Id, new { @class = "js-id" })
+                   <button type="submit" value="Save" class="btn btn-success btn-block" id="js-save">Save &nbsp;<i class="fa fa-save"></i></button>
+               </div>
+                
+        </div>
+        <br />
+    </div>
+}
+
+<div>
+    <br />
+    <br />
+    @Html.ActionLink("Back to List", "ApiCustomer", "Customer")
+    <div id="errormsg3"></div>
+</div>
+@section scripts{
+
+    @Scripts.Render("~/bundles/jqueryval");
+
+    <script>
+        $(document).ready(function () {
+            $(".li-main").removeClass("active");
+            $(".api-cust-1").addClass("active");
+
+            var cid = @ViewBag.custid;
+            $.ajax({
+                url:"/api/customer/"+cid,
+                method: "GET",
+                success: function(data){
+                    $(".js-name").val(data.name);
+                    $(".js-id").val(data.id);
+                    $(".js-membershipid").val(data.membershipId);
+                    if(data.birthDate){
+                        var dt = new Date(data.birthDate);
+                        $(".js-birthdate").val(dt.getDate()+' '+monthName(dt.getMonth())+' '+dt.getFullYear());
+                    }
+                    $("input[name='customer.IsSubscribedToNewsLetter']").prop("checked", data.isSubscribedToNewsLetter);
+                }
+
+            });
+
+            function monthName(num){
+                switch(num){
+                    case 0: return "Jan";
+                    case 1: return "Feb";
+                    case 2: return "Mar";
+                    case 3: return "Apr";
+                    case 4: return "May";
+                    case 5: return "Jun";
+                    case 6: return "Jul";
+                    case 7: return "Aug";
+                    case 8: return "Sep";
+                    case 9: return "Oct";
+                    case 10: return "Nov";
+                    case 11: return "Dec";
+                }
+            }
+
+            $(document).on("submit", "#updatecustomer", function (event) {
+                //debugger
+                event.preventDefault();
+                var id = $(".js-id").val();
+                var name = $(".js-name").val();
+                var memberid = $(".js-membershipid").val();
+                var birth = $(".js-birthdate").val();
+                var news = false
+                if($("input[name='customer.IsSubscribedToNewsLetter']").prop("checked"))
+                {
+                    news = true;
+                }
+
+                $.ajax({
+                    type: "PUT",
+                    url: $(this).attr('action'),
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify({"id":id,"name":name,"isSubscribedToNewsLetter":news,"birthDate":birth,"membershipId":memberid}),
+                    success: function (data) {
+                        $('#js-save').removeAttr('disabled');
+                        $('#js-save').text('Assign');
+                        if (data.success) {
+                            $('#errormsg3').css('color', 'green');
+                            $('#errormsg3').html("<div class='row'><div class='col-md-4 col-lg-offset-4'><div class='alert alert-success alert-dismissible fade in'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong><i class='fa fa-check'></i>&nbsp;&nbsp; Customer updated successfully</strong></div></div></div>");
+                        } else {
+                            $('#errormsg3').css('color', 'red');
+                            $('#errormsg3').html("<div class='row'><div class='col-md-4 col-lg-offset-4'><div class='alert alert-danger alert-dismissible fade in'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong><i class='fa fa-times-circle'></i>&nbsp;&nbsp; Data not saved</strong></div></div></div>");
+                        }
+                        $('#js-save').val('Save');
+                    }, error: function (req, error) {
+                        $('#js-save').removeAttr('disabled');
+                        $('#js-save').val('Save');
+                        $('#errormsg3').css('color', 'red');
+                        var resdata = JSON.parse(req.responseText);
+                        $('#errormsg3').html("<div class='row'><div class='col-md-4 col-lg-offset-4 text-center'><div class='alert alert-danger alert-dismissible fade in'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong><i class='fa fa-times-circle'></i>&nbsp;&nbsp;"+ resdata["message"]+"</strong></div></div></div>");
+                    }, beforeSend: function () {
+                        $('#js-save').attr('disabled', 'disabled');
+                        $('#js-save').val('Please wait...');
+                    }
+                });
+            });
+        });
+    </script>
+}

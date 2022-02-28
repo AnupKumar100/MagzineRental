@@ -1,0 +1,121 @@
+﻿@{
+    ViewBag.Title = "Magzine Center Home";
+}
+
+@section customcss{
+    
+<link href="~/Content/owl.carousel.css" rel="stylesheet" />
+<link href="~/Content/owl.theme.css" rel="stylesheet" />
+<link href="~/Content/owl.transitions.css" rel="stylesheet" />
+    <style>
+        .latest-post .img-responsive{
+            height: 400px !important;
+        }
+        .block-sec{
+                box-shadow: 0px 6px 30px #0b9f91;
+        }
+        .lead{
+            color:#ac1717;
+            font-weight:500 !important;
+        }
+    </style>
+    }
+<br />
+
+<div class="jumbotron block-sec" style="background-image: url('/Images/backimg.jpg'); ">
+        <h1>Magzine Center</h1>
+        <p class="lead">Rent Magazine to customer using this store</p>
+        <p><a href="/Rental/New" class="btn btn-primary btn-lg">Rent Now &raquo;</a></p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="section-title text-center">
+                <h3>Latest Magazine around the world</h3>
+                <p>Check out our lastest Magazine that are highly recommended</p>
+            </div>
+        </div>
+    </div>
+    @{
+        string currdate = DateTime.Now.ToString("dd MMM yyyy");
+    }
+    <div class="row">
+        <div class="latest-news">
+            <div class="col-md-12">
+                <div class="latest-post">
+                    <img src="~/images/Darpan.jpg" class="img-responsive" alt="">
+                    <h4><a href="#a">IPratiyogita Darpan</a></h4>
+                    <div class="post-details">
+                        <span class="date"><strong>@currdate.Substring(0,2)</strong> <br>@currdate.Substring(3)</span>
+
+                    </div>                    
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="latest-post">
+                    <img src="~/images/OutlookMoney.jpg" class="img-responsive" alt="">
+                    <h4><a href="#a">Outlook Monay</a></h4>
+                    <div class="post-details">
+                        <span class="date"><strong>@currdate.Substring(0, 2)</strong> <br>@currdate.Substring(3)</span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="latest-post">
+                    <img src="~/images/WomenEra.jpg" class="img-responsive" alt="">
+                    <h4><a href="#a">Women Era</a></h4>
+                    <div class="post-details">
+                        <span class="date"><strong>@currdate.Substring(0, 2)</strong> <br>@currdate.Substring(3)</span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="latest-post">
+                    <img src="~/images/Femina.jpg" class="img-responsive" alt="">
+                    <h4><a href="#a">Femina</a></h4>
+                    <div class="post-details">
+                        <span class="date"><strong>@currdate.Substring(0, 2)</strong> <br>@currdate.Substring(3)</span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="latest-post">
+                    <img src="~/images/Forbes.jpg" class="img-responsive" alt="">
+                    <h4><a href="#a">Forbes</a></h4>
+                    <div class="post-details">
+                        <span class="date"><strong>@currdate.Substring(0, 2)</strong> <br>@currdate.Substring(3)</span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="latest-post">
+                    <img src="~/images/IndiaToday.jpg" class="img-responsive" alt="">
+                    <h4><a href="#a">India Today</a></h4>
+                    <div class="post-details">
+                        <span class="date"><strong>@currdate.Substring(0, 2)</strong> <br>@currdate.Substring(3)</span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="latest-post">
+                    <img src="~/images/Traveller.jpeg" class="img-responsive" alt="">
+                    <h4><a href="#a">Outlook Traveller</a></h4>
+                    <div class="post-details">
+                        <span class="date"><strong>@currdate.Substring(0, 2)</strong> <br>@currdate.Substring(3)</span>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+ @Scripts.Render("~/bundles/jquerycarousel")
+    }

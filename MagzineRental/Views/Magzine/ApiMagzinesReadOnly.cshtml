@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "Api Magzines";
+}
+
+<h2>Magzines Record by Api</h2>
+<br />
+
+<table class="table table-hover table-bordered table-responsive" id="Magzines">
+    <thead>
+        <tr>
+            <th>
+                Magzines
+            </th>
+            <th>
+                Genre
+            </th>
+            <th>
+                Number of Stocks
+            </th>
+            <th>
+                Available to Rent
+            </th>
+        </tr>
+    </thead>
+
+
+</table>
+
+@section customcss{
+    @Styles.Render("~/Content/tablecss")
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/datatabless")
+
+    <script>
+        $(document).ready(function () {
+            $(".li-main").removeClass("active");
+            $(".api-mag-1").addClass("active");
+
+            var customertable = $("#Magzines").DataTable({
+                ajax: {
+                    url: "/api/Magzines",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name",
+                        render: function (data, type, Magzine) {
+                            return "<a href='/Magzine/DetailsApi/" + Magzine.id + "'>" + Magzine.name + "</a>";
+                        }
+                    },
+                    {
+                        data: "genre.name"
+                    },
+                    {
+                        data: "numberofStock"
+                    },
+                    {
+                        data: "numberAvailable"
+                    }
+                    
+
+                ]
+            });
+
+        });
+    </script>
+}

@@ -1,0 +1,49 @@
+﻿@model MagzineRental.ViewModels.MagzineViewModel
+
+@{
+    ViewBag.Title =  "Details of Magzine";
+}
+
+<h2> Magzine Details</h2>
+
+        <hr />
+<div class="table-wrapper">
+        <table class="fl-table table-hover">
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.Magzine.Name)</td>
+                <td>@Html.DisplayTextFor(model => model.Magzine.Name)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.Magzine.ReleaseDate)</td>
+                <td>
+                    @{
+                        DateTime dt = (DateTime) Model.Magzine.ReleaseDate;
+                    }
+                    <span>@dt.ToString("dd MMM yyy")</span>
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.Magzine.GenreId)</td>
+                <td>@Html.DisplayTextFor(model => model.Magzine.genre.Name)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.Magzine.NumberofStock)</td>
+                <td>@Html.DisplayTextFor(model => model.Magzine.NumberofStock)</td>
+            </tr>
+
+        </table>
+        
+        
+    </div>
+@Html.ActionLink("Back to List", "Index", "Magzine")
+ <br /><br />
+
+@section scripts{
+    <script>
+        $(function(){
+            $(".li-main").removeClass("active");
+            $(".mag-1").addClass("active");
+        });
+    </script>
+}
+
