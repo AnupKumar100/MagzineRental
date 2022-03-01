@@ -1,8 +1,9 @@
 # MagzineRental
-Project is related to Magazine store who used to Rent Magazine to customer
+Project is related to Magazine store who used to Rent Magazine to customer.
+
 To set this project on locally follows these steps.
 
-1. Clone the project in Visual Studio version greater or equl to 2015.
+1. Clone the project in Visual Studio version greater or equal to 2015.
 2. Run the script code of file script12.sql in Ms-SQL-SERVER 
 3. Change to connectionstring setting in web.config file as per your database connection.
 4. Now project is ready to run press F5.
